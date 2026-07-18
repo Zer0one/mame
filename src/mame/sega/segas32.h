@@ -250,6 +250,7 @@ protected:
 	// hardware specific
 	std::unique_ptr<uint16_t[]> m_system32_protram;
 	uint16_t m_arescue_dsp_io[6]{};
+	bool m_radm_steering_slew = false;
 
 	// video-related
 	uint16_t m_system32_displayenable[2]{};
@@ -318,6 +319,17 @@ protected:
 	segas32_analog_state(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock = 0);
 
 	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+
+private:
+	ioport_value analog_input_r(unsigned channel);
+	ioport_value analog0_r();
+	ioport_value analog1_r();
+	ioport_value analog2_r();
+	ioport_value analog3_r();
+
+	u8 m_radm_steering_adder = 0x80;
 };
 
 class segas32_trackball_state : public segas32_state
