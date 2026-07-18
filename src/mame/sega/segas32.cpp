@@ -1985,6 +1985,33 @@ static INPUT_PORTS_START( radm )
 
 	PORT_START("mainpcb:ANALOG3")
 	PORT_BIT( 0xff, 0x00, IPT_PEDAL2 ) PORT_SENSITIVITY(30) PORT_KEYDELTA(10)
+
+	PORT_START("mainpcb:STEERING_RESPONSE")
+	PORT_CONFNAME( 0x03, 0x00, "Steering Response" )
+	PORT_CONFSETTING( 0x00, "Linear" )
+	PORT_CONFSETTING( 0x01, "Progressive (Fine Center)" )
+	PORT_CONFSETTING( 0x02, "FBNeo Logarithmic (Fine Center)" )
+
+	PORT_START("mainpcb:STEERING_SLEW")
+	PORT_CONFNAME( 0xff, 0xff, "Steering Slew Step" )
+	PORT_CONFSETTING( 0x04, "4 (Slow)" )
+	PORT_CONFSETTING( 0x06, "6" )
+	PORT_CONFSETTING( 0x08, "8 (Default)" )
+	PORT_CONFSETTING( 0x0a, "10" )
+	PORT_CONFSETTING( 0x0c, "12" )
+	PORT_CONFSETTING( 0x10, "16" )
+	PORT_CONFSETTING( 0x14, "20 (Maximum Stable)" )
+	PORT_CONFSETTING( 0xff, "255 (Direct)" )
+
+	PORT_START("mainpcb:STEERING_RANGE")
+	PORT_CONFNAME( 0x7f, 0x64, "Steering Output Range" )
+	PORT_CONFSETTING( 0x32, "50%" )
+	PORT_CONFSETTING( 0x37, "55% (Rad Mobile 30-D0)" )
+	PORT_CONFSETTING( 0x3c, "60%" )
+	PORT_CONFSETTING( 0x46, "70%" )
+	PORT_CONFSETTING( 0x50, "80%" )
+	PORT_CONFSETTING( 0x5a, "90%" )
+	PORT_CONFSETTING( 0x64, "100% (Default)" )
 INPUT_PORTS_END
 
 
@@ -2014,6 +2041,33 @@ static INPUT_PORTS_START( radr )
 
 	PORT_START("mainpcb:ANALOG3")
 	PORT_BIT( 0xff, 0x00, IPT_PEDAL2 ) PORT_SENSITIVITY(30) PORT_KEYDELTA(10)
+
+	PORT_START("mainpcb:STEERING_RESPONSE")
+	PORT_CONFNAME( 0x03, 0x00, "Steering Response" )
+	PORT_CONFSETTING( 0x00, "Linear" )
+	PORT_CONFSETTING( 0x01, "Progressive (Fine Center)" )
+	PORT_CONFSETTING( 0x02, "FBNeo Logarithmic (Fine Center)" )
+
+	PORT_START("mainpcb:STEERING_SLEW")
+	PORT_CONFNAME( 0xff, 0xff, "Steering Slew Step" )
+	PORT_CONFSETTING( 0x04, "4 (Slow)" )
+	PORT_CONFSETTING( 0x06, "6" )
+	PORT_CONFSETTING( 0x08, "8 (Default)" )
+	PORT_CONFSETTING( 0x0a, "10" )
+	PORT_CONFSETTING( 0x0c, "12" )
+	PORT_CONFSETTING( 0x10, "16" )
+	PORT_CONFSETTING( 0x14, "20 (Maximum Stable)" )
+	PORT_CONFSETTING( 0xff, "255 (Direct)" )
+
+	PORT_START("mainpcb:STEERING_RANGE")
+	PORT_CONFNAME( 0x7f, 0x64, "Steering Output Range" )
+	PORT_CONFSETTING( 0x32, "50%" )
+	PORT_CONFSETTING( 0x37, "55%" )
+	PORT_CONFSETTING( 0x3c, "60%" )
+	PORT_CONFSETTING( 0x46, "70%" )
+	PORT_CONFSETTING( 0x50, "80%" )
+	PORT_CONFSETTING( 0x5a, "90%" )
+	PORT_CONFSETTING( 0x64, "100% (Default)" )
 INPUT_PORTS_END
 
 
@@ -2319,6 +2373,88 @@ segas32_regular_state::segas32_regular_state(const machine_config &mconfig, cons
 
 
 
+// Exact CURVE_Logy table used by FinalBurn Neo for Sega System 32 steering.
+// It compresses movement around the centre while retaining the full 8-bit range.
+static constexpr u8 radm_fbneo_logy_curve[0x100] =
+{
+	0x00, 0x01, 0x13, 0x1d, 0x25, 0x2b, 0x2f, 0x33, 0x37, 0x3a, 0x3d, 0x3f, 0x41, 0x44, 0x46, 0x47,
+	0x49, 0x4b, 0x4c, 0x4d, 0x4f, 0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x59, 0x5a,
+	0x5b, 0x5c, 0x5d, 0x5d, 0x5e, 0x5f, 0x60, 0x60, 0x61, 0x62, 0x62, 0x63, 0x63, 0x64, 0x65, 0x65,
+	0x66, 0x66, 0x67, 0x67, 0x68, 0x68, 0x69, 0x69, 0x6a, 0x6a, 0x6b, 0x6b, 0x6c, 0x6c, 0x6c, 0x6d,
+	0x6d, 0x6e, 0x6e, 0x6e, 0x6f, 0x6f, 0x70, 0x70, 0x70, 0x71, 0x71, 0x71, 0x72, 0x72, 0x72, 0x73,
+	0x73, 0x73, 0x74, 0x74, 0x74, 0x75, 0x75, 0x75, 0x76, 0x76, 0x76, 0x76, 0x77, 0x77, 0x77, 0x78,
+	0x78, 0x78, 0x78, 0x79, 0x79, 0x79, 0x79, 0x7a, 0x7a, 0x7a, 0x7a, 0x7b, 0x7b, 0x7b, 0x7b, 0x7c,
+	0x7c, 0x7c, 0x7c, 0x7d, 0x7d, 0x7d, 0x7d, 0x7d, 0x7e, 0x7e, 0x7e, 0x7e, 0x7f, 0x7f, 0x7f, 0x80,
+	0x80, 0x81, 0x81, 0x81, 0x82, 0x82, 0x82, 0x82, 0x83, 0x83, 0x83, 0x83, 0x83, 0x84, 0x84, 0x84,
+	0x84, 0x85, 0x85, 0x85, 0x85, 0x86, 0x86, 0x86, 0x86, 0x87, 0x87, 0x87, 0x87, 0x88, 0x88, 0x88,
+	0x88, 0x89, 0x89, 0x89, 0x8a, 0x8a, 0x8a, 0x8a, 0x8b, 0x8b, 0x8b, 0x8c, 0x8c, 0x8c, 0x8d, 0x8d,
+	0x8d, 0x8e, 0x8e, 0x8e, 0x8f, 0x8f, 0x8f, 0x90, 0x90, 0x90, 0x91, 0x91, 0x92, 0x92, 0x92, 0x93,
+	0x93, 0x94, 0x94, 0x94, 0x95, 0x95, 0x96, 0x96, 0x97, 0x97, 0x98, 0x98, 0x99, 0x99, 0x9a, 0x9a,
+	0x9b, 0x9b, 0x9c, 0x9d, 0x9d, 0x9e, 0x9e, 0x9f, 0xa0, 0xa0, 0xa1, 0xa2, 0xa3, 0xa3, 0xa4, 0xa5,
+	0xa6, 0xa7, 0xa7, 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xae, 0xaf, 0xb0, 0xb1, 0xb3, 0xb4, 0xb5, 0xb7,
+	0xb9, 0xba, 0xbc, 0xbf, 0xc1, 0xc3, 0xc6, 0xc9, 0xcd, 0xd1, 0xd5, 0xdb, 0xe3, 0xed, 0xff, 0xff,
+};
+
+ioport_value segas32_analog_state::analog_input_r(unsigned channel)
+{
+	static char const *const analog_tags[4] = { "ANALOG1", "ANALOG2", "ANALOG3", "ANALOG4" };
+	ioport_value const value = ioport(analog_tags[channel])->read();
+
+	if (!m_radm_steering_slew)
+		return value;
+
+	// Rad Mobile can misinterpret large steering jumps. Return the current
+	// accumulator for channel 0, then move it toward the curved target.
+	ioport_value const result = channel ? value : m_radm_steering_adder;
+	ioport_value target = ioport("ANALOG1")->read();
+
+	switch (ioport("STEERING_RESPONSE")->read() & 0x03)
+	{
+	case 0x01: // quadratic progression: reduced sensitivity around the centre
+	{
+		int const offset = int(target) - 0x80;
+		int const magnitude = offset < 0 ? -offset : offset;
+		int const range = offset < 0 ? 0x80 : 0x7f;
+		int const curved = (magnitude * magnitude + range / 2) / range;
+		target = ioport_value(0x80 + (offset < 0 ? -curved : curved));
+		break;
+	}
+
+	case 0x02: // exact FBNeo CURVE_Logy lookup table
+		target = radm_fbneo_logy_curve[target];
+		break;
+	}
+
+	// Limit the final steering excursion symmetrically around the centre.
+	// This acts after the response curve and before the slew-rate limiter.
+	int const range_percent = std::clamp(int(ioport("STEERING_RANGE")->read() & 0x7f), 1, 100);
+	int const ranged_offset = ((int(target) - 0x80) * range_percent) / 100;
+	target = ioport_value(std::clamp(0x80 + ranged_offset, 0x00, 0xff));
+
+	int const slew_step = std::max(1, int(ioport("STEERING_SLEW")->read() & 0xff));
+	int const delta = int(target) - int(m_radm_steering_adder);
+	m_radm_steering_adder = u8(int(m_radm_steering_adder) + std::clamp(delta, -slew_step, slew_step));
+
+	return result;
+}
+
+ioport_value segas32_analog_state::analog0_r() { return analog_input_r(0); }
+ioport_value segas32_analog_state::analog1_r() { return analog_input_r(1); }
+ioport_value segas32_analog_state::analog2_r() { return analog_input_r(2); }
+ioport_value segas32_analog_state::analog3_r() { return analog_input_r(3); }
+
+void segas32_analog_state::device_start()
+{
+	segas32_state::device_start();
+	save_item(NAME(m_radm_steering_adder));
+}
+
+void segas32_analog_state::device_reset()
+{
+	segas32_state::device_reset();
+	m_radm_steering_adder = 0x80;
+}
+
 void segas32_state::system32_analog_map(address_map &map)
 {
 	map.unmap_value_high();
@@ -2333,10 +2469,10 @@ void segas32_analog_state::device_add_mconfig(machine_config &config)
 	m_maincpu->set_addrmap(AS_PROGRAM, &segas32_analog_state::system32_analog_map);
 
 	msm6253_device &adc(MSM6253(config, "adc"));
-	adc.set_input_tag<0>("ANALOG1");
-	adc.set_input_tag<1>("ANALOG2");
-	adc.set_input_tag<2>("ANALOG3");
-	adc.set_input_tag<3>("ANALOG4");
+	adc.set_input_cb<0>(FUNC(segas32_analog_state::analog0_r));
+	adc.set_input_cb<1>(FUNC(segas32_analog_state::analog1_r));
+	adc.set_input_cb<2>(FUNC(segas32_analog_state::analog2_r));
+	adc.set_input_cb<3>(FUNC(segas32_analog_state::analog3_r));
 }
 
 DEFINE_DEVICE_TYPE(SEGA_S32_ANALOG_DEVICE, segas32_analog_state, "segas32_pcb_analog", "Sega System 32 analog PCB")
@@ -5938,6 +6074,7 @@ void segas32_state::init_radm()
 	segas32_common_init();
 	m_sw1_output = &segas32_state::radm_sw1_output;
 	m_sw2_output = &segas32_state::radm_sw2_output;
+	m_radm_steering_slew = true;
 }
 
 
@@ -5948,6 +6085,7 @@ void segas32_state::init_radr()
 	m_sw2_output = &segas32_state::radr_sw2_output;
 
 	m_s32comm->set_linktype(14084); // EPR-14084
+	m_radm_steering_slew = true;
 }
 
 
