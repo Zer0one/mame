@@ -15,6 +15,13 @@ It is intentionally based on MAME commit
 | `902913930ef` | `mame-radm-radr-steering-final.patch` | `04fa5bdfd805c9b47cc29381dec998cd33e2a23d078198cec49243d02d5bf204` | Add response curve, output range and slew controls for Rad Mobile and Rad Rally. |
 | `ea30b4846d0` | `mame-joystick-saturation-final.patch` | `ff964bca3c76c47f364e2f1e425f29f8fa2a6ff3c4a8eefc3b7772bb6a866172` | Accept joystick saturation values up to 2.0 while keeping the upstream default. |
 
+The five pre-Codex patch artifacts are preserved under
+`docs/history/original-patches/`. Stable Git patch IDs confirm that the three
+final artifacts are exactly the changes recorded by the corresponding source
+commits. The earlier `mame-swa-throttle.patch` has the same patch ID as its
+final counterpart, while `mame-radm-radr-steering-limit.patch` records a
+superseded fixed-range prototype.
+
 The original working tree was:
 
 `/Users/andrea/dev/mame`
@@ -52,7 +59,9 @@ later and does not pretend to be part of the original development timeline.
 
 `https://github.com/mamedev/mame.git`
 
-No `origin` is configured yet. It is reserved for the user's GitHub fork.
+`origin` points to the public GitHub fork:
+
+`https://github.com/Zer0one/mame-controls.git`
 
 ## Targeted build
 
