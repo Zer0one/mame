@@ -9,10 +9,12 @@ reference material.
 ## Repository structure
 
 - `upstream` is the official `mamedev/mame` repository.
-- `origin` is intentionally absent until the user's fork exists.
+- `origin` is the public `Zer0one/mame-controls` fork.
 - `retro-controls` contains three reconstructed source commits followed by
   fork-specific documentation.
 - `RETRO_CONTROLS.md` is the authoritative migration and provenance note.
+- `docs/history/original-patches/` preserves the five pre-Codex patch
+  artifacts, including two superseded/intermediate revisions.
 
 ## Editing rules
 
@@ -22,8 +24,8 @@ reference material.
   minimal whitespace churn.
 - Do not copy ROMs, user configuration, build products or personal paths into
   commits.
-- Do not alter `/Users/andrea/dev/mame` or the patch originals under
-  `/Users/andrea/dev/patches`.
+- Do not alter `/Users/andrea/dev/mame`; treat the archived patch artifacts
+  under `docs/history/original-patches/` as immutable provenance.
 
 ## Verification
 
