@@ -29,7 +29,7 @@ local control changes. The pre-migration operational checkout was moved out of
 
 ## Verification
 
-For source changes, run the narrowest relevant partial build first:
+For standalone source changes, run the narrowest relevant partial build first:
 
 ```sh
 make SUBTARGET=retro-controls \
@@ -51,7 +51,20 @@ alone.
 
 ## Upstream updates
 
-Never merge an upstream update blindly into the operational branch. Start from
-the intended upstream commit on a temporary branch, replay the three source
-commits in order, resolve each conflict independently, and repeat the tests.
-Promote the verified integration commit to `main` without rebuilding it.
+The standard upstream-update workflow is performed directly on the local
+`main` branch; do not create a temporary integration branch. Fetch `upstream`
+and `origin`, inspect the incoming changes (especially Model 1, Model 2 and the
+files touched by this fork), and create a dated local safety tag at the current
+`main` commit before rewriting history.
+
+Rebase/replay the three source changes separately and in chronological order
+onto the intended `upstream/master` commit, resolving each conflict on `main`.
+For a routine upstream update, skip the preliminary partial build and perform
+one complete native ARM64 build with `make -j8`, followed by `./mame -validate`
+and the fork-specific checks. Address failures directly on local `main` and
+rebuild as required.
+
+Publish the verified result to `origin/main` using `--force-with-lease` when
+the replay has rewritten commit history. Do not push to `upstream`. GitHub
+should normally continue to point to the last verified build until validation
+of the updated local `main` has completed.
