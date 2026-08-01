@@ -1,4 +1,4 @@
-# Retro controls branch
+# MAME controls fork
 
 This branch preserves three local MAME control changes reconstructed from the
 Retro-Script ChatGPT project and from the patch files that were still in use on
@@ -26,13 +26,14 @@ commits. The earlier `mame-swa-throttle.patch` has the same patch ID as its
 final counterpart, while `mame-radm-radr-steering-limit.patch` records a
 superseded fixed-range prototype.
 
-The original working tree was:
+The pre-migration operational working tree occupied:
 
 `/Users/andrea/dev/mame`
 
-It is an operational reference and must not be modified by migration work. At
-the time of the original reconstruction, the four affected files in the
-original branch were byte-for-byte identical to that working tree:
+It was used as a read-only reference during migration and moved to the Trash
+before this checkout adopted that path. At the time of the original
+reconstruction, the four affected files in the original branch were
+byte-for-byte identical to that working tree:
 
 - `src/emu/emuopts.cpp`;
 - `src/mame/sega/model1.cpp`;
@@ -65,7 +66,7 @@ later and does not pretend to be part of the original development timeline.
 
 `origin` points to the public GitHub fork:
 
-`https://github.com/Zer0one/mame-controls.git`
+`https://github.com/Zer0one/mame.git`
 
 ## Targeted build
 
@@ -97,8 +98,8 @@ in `docs/source/initialsetup/compilingmame.rst`.
    linear response, 100% output range and direct slew.
 5. Test the optional progressive and FBNeo response curves.
 6. Test reduced steering ranges and non-direct slew values.
-7. Compare the four affected files with the operational reference before
-   declaring a migrated revision equivalent.
+7. Confirm that the three replayed commits retain the stable patch IDs recorded
+   for the final archived artifacts.
 
 The default Rad Mobile/Rad Rally settings are deliberately intended to preserve
 upstream-like direct behaviour. Optional processing is selected through the
@@ -111,9 +112,10 @@ source commits in chronological order:
 
 ```sh
 git fetch upstream
-git switch -c retro-controls-update upstream/master
+git switch -c mame-update upstream/master
 git cherry-pick 3b822ce13dd 3d6fc7808fd b5febf3f5ad
 ```
 
 Resolve conflicts one change at a time and repeat the targeted and runtime
-checks. Do not overwrite the operational working tree as part of an update.
+checks. After the final full build passes, promote the tested commit to `main`
+without compiling it again.
