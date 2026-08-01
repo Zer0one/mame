@@ -90,7 +90,9 @@ in `docs/source/initialsetup/compilingmame.rst`.
 
 ## Verification checklist
 
-1. Confirm that the targeted build completes without errors.
+1. Confirm that the required build completes without errors. For routine
+   upstream updates this is one complete native ARM64 build with `make -j8`;
+   standalone source development may use the targeted build first.
 2. Check that `joy_saturation` accepts values greater than 1.0 and retains the
    default value `0.85`.
 3. Verify the Star Wars Arcade throttle over its complete usable range.
@@ -107,15 +109,32 @@ new configuration ports.
 
 ## Updating from upstream
 
-Fetch upstream, create a temporary integration branch and replay the three
-source commits in chronological order:
+Routine upstream updates are integrated directly on the local `main` branch.
+Fetch both remotes, inspect the incoming commits (particularly Model 1, Model 2
+and the files modified by this fork), and create a dated local safety tag at
+the current commit before changing history:
 
 ```sh
-git fetch upstream
-git switch -c mame-update upstream/master
-git cherry-pick 3b822ce13dd 3d6fc7808fd b5febf3f5ad
+git switch main
+git fetch upstream origin
+git tag upstream-update-backup-YYYY-MM-DD main
 ```
 
-Resolve conflicts one change at a time and repeat the targeted and runtime
-checks. After the final full build passes, promote the tested commit to `main`
-without compiling it again.
+Rebase/replay the three source changes separately and in chronological order
+onto the selected `upstream/master` commit. Resolve any conflict directly on
+`main`, preserving the logical independence and stable patch identity of each
+change.
+
+For this routine, do not perform a preliminary targeted build. Run one complete
+native ARM64 build and validate the resulting binary:
+
+```sh
+make -j8
+./mame -validate
+```
+
+Then perform the fork-specific configuration checks described above. Fix any
+problem directly on local `main` and rebuild only when necessary. Once the
+result is verified, publish it to `origin/main`; because replaying the patches
+rewrites their commit IDs, use `git push --force-with-lease origin main` when
+required. Never push to `upstream`.
