@@ -10,16 +10,14 @@ Upstream base:
 
 Verified branch state:
 
-`121267a109002530e124244d5200dc9061b5b615`
+`0e523fc34f11513d70fd213d1c44d762e1757480`
 
 ### Environment
 
 - macOS on ARM64;
-- Clang 21.0.0;
-- generated MAME version:
-  `0.289 (mame0289-124-g121267a1090)`.
+- Clang 21.0.0.
 
-### Build
+### Targeted build
 
 The targeted build completed successfully using the command documented in
 `RETRO_CONTROLS.md`. An initial attempt encountered stale generated dependency
@@ -27,12 +25,30 @@ files containing the checkout's previous absolute path. The 506 affected
 generated `.d` files were removed and the cleanly regenerated build passed.
 
 The resulting `retro_controls` binary is an ARM64 Mach-O executable with
-SHA-256:
+generated version `0.289 (mame0289-124-g121267a1090)` and SHA-256:
 
 `50421a2d817302310fb9fefde0040db5e02069bf3bc61b35bf177c2969a3495c`
 
 The compiler emitted deprecation warnings from existing MAME and third-party
 macOS code. It emitted no error for the replayed control changes.
+
+### Full build
+
+Command:
+
+```sh
+make -j8
+```
+
+Result: successful. The generated driver list contains 43,071 systems.
+
+The resulting `mame` binary is a 392 MB ARM64 Mach-O executable with generated
+version `0.289 (mame0289-125-g0e523fc34f1)` and SHA-256:
+
+`e709cde63390f85b97707ebaca9fc9694dd3ee6b9cdc375a7e25c006269cb326`
+
+The compiler emitted warnings from existing upstream and third-party code but
+completed without errors.
 
 ### Non-interactive checks
 
@@ -44,6 +60,9 @@ macOS code. It emitted no error for the replayed control changes.
   `1.5`;
 - `retro_controls -listxml radm radr`: both systems expose the three steering
   controls, with default output range `100%` and default slew `255 (Direct)`;
+- `mame -validate`: passed;
+- the same system, saturation and steering configuration checks passed using
+  the full `mame` binary;
 - `git diff --check upstream/master...HEAD`, excluding the immutable verbatim
   patch artifacts, passed.
 
