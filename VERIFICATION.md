@@ -1,6 +1,54 @@
 # Verification history
 
-## Upstream update verification
+## Upstream update verification — 2 August 2026
+
+Upstream base:
+
+`3279399312dcea4b860f371bdede48a1b536bad1`
+
+Verified source and build commit:
+
+`c3d3e64b5a6`
+
+The upstream interval from `61796246b62` contains three commits affecting
+Altos 8000, the AIC6250 controller and Mahjong Emperor. It contains no change
+to Model 1, Model 2, System 32 or `emuopts.cpp`.
+
+The ten downstream commits were replayed directly on local `main` without
+conflicts. The three source commits retain their stable patch IDs:
+
+- `6d9b25273a5d3eaba45998a2d462511a80c4e226`;
+- `8e343dd8a5887a9035600f408cdd1aa9e4bdb629`;
+- `e43ec43b621a2f85b2e9bafd4ba1f733d65f6b46`.
+
+### Full build
+
+The clean native ARM64 build completed successfully with `make -j8`. The
+generated driver list contains 43,072 systems. The resulting `mame` binary is
+a 392 MB ARM64 Mach-O executable with generated version
+`0.289 (mame0289-132-gc3d3e64b5a6)` and SHA-256:
+
+`d2d9e9c75f634a1dea3454b672f3b2be1fbc063e852b055f0436fa64d95e8a58`
+
+The compiler emitted warnings from existing upstream and third-party code but
+completed without errors.
+
+### Non-interactive checks
+
+- `mame -validate`: passed;
+- `mame -listfull swa radm radr`: all three systems found;
+- with `-noreadconfig`, the joystick saturation default remains `0.85` and
+  `joystick_saturation 1.5` is accepted;
+- both Rad Mobile and Rad Rally expose linear, progressive and FBNeo steering
+  response modes, default output range `100%`, and default slew
+  `255 (Direct)`;
+- the Star Wars Arcade controls expose the expected analog stick ranges;
+- `git diff --check`, excluding the immutable archived patches: passed.
+
+Physical controller and ROM-dependent checks remain required as described at
+the end of this document.
+
+## Upstream update verification — 1 August 2026
 
 Verification date: 1 August 2026
 
