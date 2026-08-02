@@ -5,19 +5,19 @@ Retro-Script ChatGPT project and from the patch files that were still in use on
 26 July 2026.
 
 It is intentionally based on MAME commit
-`61796246b62e2d004e6aef0f13a72b6a57bbb842`.
+`3279399312dcea4b860f371bdede48a1b536bad1`.
 
 The changes were originally reconstructed on
 `ee298d84e0c7e409f4bb7ce4da10bb69b06edc4f`, then replayed in order on the
-new upstream base on 1 August 2026.
+current upstream base on 2 August 2026.
 
 ## Changes
 
 | Commit | Original patch | SHA-256 | Purpose |
 |---|---|---|---|
-| `3b822ce13dd` | `mame-swa-throttle-final.patch` | `254cbcd0bd4f8a16704d2edb85360e0252b5300e4509246ff5e4296244b9107b` | Map the Star Wars Arcade throttle as an analog Z stick with the required range and centre. |
-| `3d6fc7808fd` | `mame-radm-radr-steering-final.patch` | `04fa5bdfd805c9b47cc29381dec998cd33e2a23d078198cec49243d02d5bf204` | Add response curve, output range and slew controls for Rad Mobile and Rad Rally. |
-| `b5febf3f5ad` | `mame-joystick-saturation-final.patch` | `ff964bca3c76c47f364e2f1e425f29f8fa2a6ff3c4a8eefc3b7772bb6a866172` | Accept joystick saturation values up to 2.0 while keeping the upstream default. |
+| `13a78cce478` | `mame-swa-throttle-final.patch` | `254cbcd0bd4f8a16704d2edb85360e0252b5300e4509246ff5e4296244b9107b` | Map the Star Wars Arcade throttle as an analog Z stick with the required range and centre. |
+| `418b4989106` | `mame-radm-radr-steering-final.patch` | `04fa5bdfd805c9b47cc29381dec998cd33e2a23d078198cec49243d02d5bf204` | Add response curve, output range and slew controls for Rad Mobile and Rad Rally. |
+| `6a009ed86fd` | `mame-joystick-saturation-final.patch` | `ff964bca3c76c47f364e2f1e425f29f8fa2a6ff3c4a8eefc3b7772bb6a866172` | Accept joystick saturation values up to 2.0 while keeping the upstream default. |
 
 The five pre-Codex patch artifacts are preserved under
 `docs/history/original-patches/`. Stable Git patch IDs confirm that the three
