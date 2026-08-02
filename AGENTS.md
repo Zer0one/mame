@@ -1,10 +1,11 @@
-# Codex instructions for the downstream MAME fork
+# Codex instructions for the personal MAME fork
 
 ## Scope
 
-This checkout is the operational downstream MAME fork used to preserve three
-local control changes. The pre-migration operational checkout was moved out of
-`/Users/andrea/dev/mame` after the migration was verified.
+This checkout is the persistent development source for Andrea's personal MAME
+fork. It currently preserves three local control changes and may contain
+unrelated future custom patches. Its local path is
+`/Users/andrea/dev/mame-my`.
 
 ## Repository structure
 
@@ -57,14 +58,12 @@ and `origin`, inspect the incoming changes (especially Model 1, Model 2 and the
 files touched by this fork), and create a dated local safety tag at the current
 `main` commit before rewriting history.
 
-Rebase/replay the three source changes separately and in chronological order
-onto the intended `upstream/master` commit, resolving each conflict on `main`.
-For a routine upstream update, skip the preliminary partial build and perform
-one complete native ARM64 build with `make -j8`, followed by `./mame -validate`
-and the fork-specific checks. Address failures directly on local `main` and
-rebuild as required.
+Rebase/replay the source changes separately and in chronological order onto
+the intended `upstream/master` commit, resolving each conflict on `main` and
+preserving logical commit separation. For a routine upstream update, perform
+one complete native ARM64 build with `make -j8`, followed by
+`./mame -validate` and the fork-specific checks. Address failures directly on
+local `main` and rebuild as required.
 
 Publish the verified result to `origin/main` using `--force-with-lease` when
-the replay has rewritten commit history. Do not push to `upstream`. GitHub
-should normally continue to point to the last verified build until validation
-of the updated local `main` has completed.
+history has been rewritten. Never push to `upstream`.

@@ -1,4 +1,4 @@
-# MAME controls fork
+# Personal MAME fork: control patches
 
 This branch preserves three local MAME control changes reconstructed from the
 Retro-Script ChatGPT project and from the patch files that were still in use on
@@ -30,9 +30,10 @@ The pre-migration operational working tree occupied:
 
 `/Users/andrea/dev/mame`
 
-It was used as a read-only reference during migration and moved to the Trash
-before this checkout adopted that path. At the time of the original
-reconstruction, the four affected files in the original branch were
+It was used as a read-only reference during migration and moved to the Trash.
+The persistent personal fork now lives at `/Users/andrea/dev/mame-my`. At the
+time of the original reconstruction, the four affected files in the original
+branch were
 byte-for-byte identical to that working tree:
 
 - `src/emu/emuopts.cpp`;
@@ -120,21 +121,9 @@ git fetch upstream origin
 git tag upstream-update-backup-YYYY-MM-DD main
 ```
 
-Rebase/replay the three source changes separately and in chronological order
-onto the selected `upstream/master` commit. Resolve any conflict directly on
-`main`, preserving the logical independence and stable patch identity of each
-change.
-
-For this routine, do not perform a preliminary targeted build. Run one complete
-native ARM64 build and validate the resulting binary:
-
-```sh
-make -j8
-./mame -validate
-```
-
-Then perform the fork-specific configuration checks described above. Fix any
-problem directly on local `main` and rebuild only when necessary. Once the
-result is verified, publish it to `origin/main`; because replaying the patches
-rewrites their commit IDs, use `git push --force-with-lease origin main` when
-required. Never push to `upstream`.
+Rebase/replay the source changes separately and in chronological order onto
+the selected `upstream/master` commit. Resolve conflicts directly on `main`,
+preserving the logical independence of each change. Run one complete native
+ARM64 build with `make -j8`, validate the binary and perform the fork-specific
+checks above. Publish verified history to `origin/main` with
+`--force-with-lease` when required. Never push to `upstream`.
