@@ -5,7 +5,8 @@
 This checkout is the persistent development source for Andrea's personal MAME
 fork. It currently preserves three local control changes and may contain
 unrelated future custom patches. Its local path is
-`/Users/andrea/dev/mame-my`.
+`/Users/andrea/dev/mame`. The separate updater-managed build checkout is
+`/Users/andrea/dev/mame-my`; do not develop or store personal changes there.
 
 ## Repository structure
 
